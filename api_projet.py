@@ -122,7 +122,8 @@ model_logreg = joblib.load('./models/best_model.pkl')
 # importation du dataset transformé
 # data_transformed=pd.read_csv("./data/data_transformed.csv", encoding='utf-8')
 # data=pd.read_csv('./data/data.csv')
-target=pd.read_csv('./data/target.csv', usecols=lambda x: x != 'Unnamed: 0')
+target = pd.read_csv('./data/target.csv', index_col=0)
+target = target.reset_index(drop=True)
 
 st.set_option("deprecation.showPyplotGlobalUse",False)
 
@@ -136,9 +137,8 @@ def main():
 
     
     def load_df():
-        data=pd.read_csv("./data/data.csv",index_col=0)
-        #data=data.drop("SK_ID_CURR",axis=1)
-      ##  data=data.drop("TARGET",axis=1)
+        data = pd.read_csv('./data/data.csv', index_col=0)
+        data = data.reset_index(drop=True)
         return data
         
     data=load_df()
