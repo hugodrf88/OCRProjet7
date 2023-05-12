@@ -137,23 +137,23 @@ def main():
 
     
     def load_df():
-        data = pd.read_csv('./data/data.csv', index_col=0)
-        data = data.reset_index(drop=True)
-        return data
+        data_sample = pd.read_csv('./data/data_sample.csv', index_col=0)
+        data_sample = data_sample.reset_index(drop=True)
+        return data_sample
         
-    data=load_df()
+    data_sample=load_df()
     
     
 
     
-    num_cols_full=data.select_dtypes(exclude=[object]).columns.to_list()
-    cat_cols_full=data.select_dtypes(include=[object]).columns.to_list()
+    num_cols_full=data_sample.select_dtypes(exclude=[object]).columns.to_list()
+    cat_cols_full=data_sample.select_dtypes(include=[object]).columns.to_list()
     
-    num_cols=data.select_dtypes(exclude="object").columns.tolist()
+    num_cols=data_sample.select_dtypes(exclude="object").columns.tolist()
     num_cols=[col for col in num_cols if col!="TARGET"]
     num_cols=[col for col in num_cols if col in dict_main_variables.keys()]
 
-    cat_cols=data.select_dtypes(include="object").columns.tolist()
+    cat_cols=data_sample.select_dtypes(include="object").columns.tolist()
     cat_cols=[col for col in cat_cols if col in dict_main_variables.keys()]
     
     def init_df(df):
@@ -187,18 +187,18 @@ def main():
     #         df[c]=c.globals()[c]
                 
                 
-    data_client,dic=init_df(data)
+    data_client,dic=init_df(data_sample)
   
     
 
     
-    other_variables=[var for var  in data.columns if var not in dict_main_variables.keys()]
+    other_variables=[var for var  in data_sample.columns if var not in dict_main_variables.keys()]
 
     st.sidebar.header("Paramètres d'entrée")
     
     for k in dict_main_variables.keys():
         if k in cat_cols:
-            vals=data[k].value_counts().index.to_list()
+            vals=data_sample[k].value_counts().index.to_list()
             default_value=data_client[k].values[0]
             if len(vals)>3:
                 new_value=st.sidebar.selectbox(dict_main_variables[k],vals)
@@ -279,7 +279,7 @@ def main():
     if advanced_options:
         for k in other_variables:
             if (k in cat_cols)|("FLAG" in k):
-                vals=data[k].value_counts().index.to_list()
+                vals=data_sample[k].value_counts().index.to_list()
                 default_value=data_client[k].values[0]
                 if len(vals)>3:
                     new_value=st.sidebar.selectbox(k,vals)
@@ -328,12 +328,12 @@ def main():
 
     def knn_search(client,n=100):
         knn=KNeighborsClassifier(n_neighbors=n)
-        data_trans=preprocessor.fit_transform(data,target)
+        data_trans=preprocessor.fit_transform(data_sample,target)
         knn.fit(data_trans,target)
         
         client_transformed=preprocessor.transform(client)
         distances, indices = knn.kneighbors(client_transformed, n_neighbors=n)
-        clients_proches = data.iloc[indices[0]]
+        clients_proches = data_sample.iloc[indices[0]]
         
         return clients_proches
     
@@ -343,7 +343,7 @@ def main():
     comparaison=st.button("Afficher comparaisons")
     if comparaison:
         
-        num_cols=data.select_dtypes(exclude="object").columns.tolist()
+        num_cols=data_sample.select_dtypes(exclude="object").columns.tolist()
         num_cols=[col for col in num_cols if col!="TARGET"]
         num_cols=[col for col in num_cols if col in dict_main_variables.keys()]
 
@@ -354,13 +354,13 @@ def main():
 
         n_clients=500
         
-        preprocessor_fill=preprocessor_f(data)
+        preprocessor_fill=preprocessor_f(data_sample)
         
         
         clients_proches=knn_search(data_client,n=n_clients)
         index=clients_proches.index
 
-        preprocessor_fill.fit(data,target)
+        preprocessor_fill.fit(data_sample,target)
         clients_proches_filled=preprocessor_fill.transform(clients_proches)
    
         clients_proches_filled=pd.DataFrame(clients_proches_filled,columns=num_cols+cat_cols)
