@@ -116,7 +116,7 @@ def preprocessor_f(df):
 preprocessor = joblib.load('./models/preprocessor.joblib')
 #preprocessor_fill=joblib.load('./models/preprocessor_fill.joblib')
 
-model_logreg = joblib.load('./models/best_model.pkl')
+model_logreg = joblib.load('./models/logreg_model.pkl')
 #model_knn=joblib.load("./models/knn_model.joblib")
 
 # importation du dataset transformé

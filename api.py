@@ -5,6 +5,8 @@ from pydantic import BaseModel
 import uvicorn
 import joblib
 import logging
+import dill as pickle
+
 
 import category_encoders
 from functions.functions import fill_num,fill_cat
@@ -13,39 +15,21 @@ from functions.functions import fill_num,fill_cat
 from sklearn.impute import SimpleImputer
 
 
-def fill_num(df, strategy="median"):
-    df_tmp = df.copy()
-    imputer = SimpleImputer(strategy=strategy)
-    cols = [col for col in df.columns if df[col].dtype == "float64"]
-    df_tmp[cols] = imputer.fit_transform(df_tmp[cols])
-    return df_tmp.values
+class CustomUnpickler(pickle.Unpickler):
 
+    def find_class(self, module, name):
+        if name == 'fill_num':
+            from functions.functions import fill_num
+            return fill_num
 
-# La fonction prend un DataFrame et un indicateur booléen most_frequent qui indique si l'on
-# veut utiliser la stratégie "most_frequent" de SimpleImputer
-# ou par la chaîne "Unknown"
+        if name == 'fill_cat':
+            from functions.functions import fill_cat
+            return fill_cat
+        return super().find_class(module, name)
 
-def fill_cat(df, most_frequent=False):
-    df_tmp = df.copy()
+current_model = 'logreg_model.pkl'
 
-    # Sélection des colonnes catégorielles dans le DataFrame
-    cols = [col for col in df.columns if df[col].dtype == 'object']
-
-    #  remplir les na dans chaque colonne catégorielle avec la valeur la plus fréquente
-    if most_frequent:
-        imputer = SimpleImputer(strategy='most_frequent')
-        # Appliquer la méthode fit_transform de SimpleImputer
-        # et remplacer les valeurs manquantes par la valeur la plus fréquente
-        df_tmp[cols] = imputer.fit_transform(df_tmp[cols])
-    # Sinon, remplir les na dans chaque colonne catégorielle avec "Unknown"
-    else:
-
-        df_tmp[cols] = df_tmp[cols].fillna("Unknown")
-
-    return df_tmp.values
-
-
-model_logreg = joblib.load('./models/logreg_model.pkl')
+model_logreg = CustomUnpickler(open('models/' + current_model, 'rb')).load()
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -57,20 +41,20 @@ app = FastAPI()
 
 
 class PredictionRequest(BaseModel):
-    NAME_CONTRACT_TYPE: object
-    CODE_GENDER: object
-    FLAG_OWN_CAR: object
-    FLAG_OWN_REALTY: object
+    NAME_CONTRACT_TYPE: str
+    CODE_GENDER: str
+    FLAG_OWN_CAR: str
+    FLAG_OWN_REALTY: str
     CNT_CHILDREN: int
     AMT_INCOME_TOTAL: float
     AMT_CREDIT: float
     AMT_ANNUITY: float
     AMT_GOODS_PRICE: float
-    NAME_TYPE_SUITE: object
-    NAME_INCOME_TYPE: object
-    NAME_EDUCATION_TYPE: object
-    NAME_FAMILY_STATUS: object
-    NAME_HOUSING_TYPE: object
+    NAME_TYPE_SUITE: str
+    NAME_INCOME_TYPE: str
+    NAME_EDUCATION_TYPE: str
+    NAME_FAMILY_STATUS: str
+    NAME_HOUSING_TYPE: str
     REGION_POPULATION_RELATIVE: float
     DAYS_BIRTH: int
     DAYS_EMPLOYED: int
@@ -83,11 +67,11 @@ class PredictionRequest(BaseModel):
     FLAG_CONT_MOBILE: int
     FLAG_PHONE: int
     FLAG_EMAIL: int
-    OCCUPATION_TYPE: object
+    OCCUPATION_TYPE: str
     CNT_FAM_MEMBERS: float
     REGION_RATING_CLIENT: int
     REGION_RATING_CLIENT_W_CITY: int
-    WEEKDAY_APPR_PROCESS_START: object
+    WEEKDAY_APPR_PROCESS_START: str
     HOUR_APPR_PROCESS_START: int
     REG_REGION_NOT_LIVE_REGION: int
     REG_REGION_NOT_WORK_REGION: int
@@ -95,7 +79,7 @@ class PredictionRequest(BaseModel):
     REG_CITY_NOT_LIVE_CITY: int
     REG_CITY_NOT_WORK_CITY: int
     LIVE_CITY_NOT_WORK_CITY: int
-    ORGANIZATION_TYPE: object
+    ORGANIZATION_TYPE: str
     EXT_SOURCE_1: float
     EXT_SOURCE_2: float
     EXT_SOURCE_3: float
@@ -141,11 +125,11 @@ class PredictionRequest(BaseModel):
     LIVINGAREA_MEDI: float
     NONLIVINGAPARTMENTS_MEDI: float
     NONLIVINGAREA_MEDI: float
-    FONDKAPREMONT_MODE: object
-    HOUSETYPE_MODE: object
+    FONDKAPREMONT_MODE: str
+    HOUSETYPE_MODE: str
     TOTALAREA_MODE: float
-    WALLSMATERIAL_MODE: object
-    EMERGENCYSTATE_MODE: object
+    WALLSMATERIAL_MODE: str
+    EMERGENCYSTATE_MODE: str
     OBS_30_CNT_SOCIAL_CIRCLE: float
     DEF_30_CNT_SOCIAL_CIRCLE: float
     OBS_60_CNT_SOCIAL_CIRCLE: float
@@ -332,4 +316,4 @@ def prediction(request: PredictionRequest):
 if __name__ == '__main__':
 
 
-    uvicorn.run(app, host='127.0.0.1', port=8000)
+    uvicorn.run(app, host='127.0.0.3', port=8000)
