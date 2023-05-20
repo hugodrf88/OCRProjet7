@@ -1,7 +1,11 @@
+from typing import Dict,Union
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import requests
+from pydantic import BaseModel
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
@@ -27,7 +31,10 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
 
-
+class PredictionVariables(BaseModel):
+    params: Dict[str, Union[str, int, float]]={}  # Utilisation d'un dictionnaire pour stocker les variables
+    def update_variables(self, variables_dict: Dict[str, Union[str, int, float]]):
+        self.params.update(variables_dict)
 dict_main_variables={'CODE_GENDER':"Sexe",#'Gender of the client'
                 'DAYS_BIRTH':"Date de naissance",#"Client's age in days at the time of application"
 
@@ -53,6 +60,9 @@ dict_main_variables={'CODE_GENDER':"Sexe",#'Gender of the client'
                 
 
                 }
+
+
+
 
 
 
@@ -187,9 +197,9 @@ def main():
     #         df[c]=c.globals()[c]
                 
                 
-    data_client,dic=init_df(data_sample)
+    #data_client,dic=init_df(data_sample)
   
-    
+    data_client=pd.read_csv("./data/data_med.csv",index_col=0)
 
     
     other_variables=[var for var  in data_sample.columns if var not in dict_main_variables.keys()]
@@ -240,18 +250,38 @@ def main():
     # data_client_trans=preprocessor.transform(data_client)
 
 
+    data_client_dict=data_client.to_dict(orient='records')[0]
 
-    prediction=model_logreg.predict_proba(data_client)
-    prediction=prediction[:,1]
-    rounded_prediction=str(prediction.round(2))
+    prediction_variables=PredictionVariables()
+    prediction_variables.update_variables(data_client_dict)
+    st.write(prediction_variables)
+
+    response = requests.post('http://127.0.0.1:8000/prediction', json=data_client_dict)
+
+    # Vérifier si la requête a réussi
+    if response.status_code == 200:
+        # Extraire les données JSON de la réponse
+        df = response.json()
+
+        # Accéder à la partie spécifique des données souhaitées
+        if 'prediction' in df:
+            prediction = df['prediction']
+            st.write('La prédiction est :', prediction)
+        else:
+            st.write('Données de prédiction manquantes dans la réponse.')
+    else:
+        st.write('La requête a échoué avec le code de statut :', response.status_code)
+    #prediction=response.json()
+    #st.write(prediction)
+    #rounded_prediction=str(prediction.round(2))
 
     st.subheader("Résultat :")
-    st.write(f"<h1 style='text-align: center; color: grey; font-size: 55px;'>{str(rounded_prediction).strip('[]')}</h1>", unsafe_allow_html=True)
+    #st.write(f"<h1 style='text-align: center; color: grey; font-size: 55px;'>{str(rounded_prediction).strip('[]')}</h1>", unsafe_allow_html=True)
     
     
     seuil=1/4
     # Définir une variable conditionnelle
-    condition = prediction<=seuil
+    condition = response<=seuil
     
     # Afficher un texte en vert si la condition est vraie, sinon en rouge
     if condition:

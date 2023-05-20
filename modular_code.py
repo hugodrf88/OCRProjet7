@@ -281,12 +281,12 @@ def train_model(df,X_tr,X_t,y_tr,y_t):
     
 def main():
     logging.info("Importation des données...")
-    raw_data=import_data("./data/application_train.csv")
+    raw_data=import_data("../application_train.csv")
     logging.info("Importation des données avec succès")
     
-    logging.info("Application de la fonction seuil_na...")
-    raw_data=seuil_na(raw_data)
-    logging.info("Application de la fonction avec succès")
+    # logging.info("Application de la fonction seuil_na...")
+    # raw_data=seuil_na(raw_data)
+    # logging.info("Application de la fonction avec succès")
     
     logging.info("Division des données...")
     train_data,Xtrain,Xtest,ytrain,ytest=data_splitting(raw_data)
