@@ -1,7 +1,7 @@
 
 import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 import uvicorn
 import joblib
 import logging

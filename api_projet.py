@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
-
+import category_encoders
 
 
 from sklearn.preprocessing import FunctionTransformer
@@ -22,9 +22,9 @@ from datetime import date, timedelta
 import seaborn as sns
 
 
-import plotly.express as px
-import plotly.graph_objs as go
-from plotly.subplots import make_subplots
+# import plotly.express as px
+# import plotly.graph_objs as go
+# from plotly.subplots import make_subplots
 
 
 
