@@ -10,6 +10,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
 
+import plotly.graph_objects as go
+import plotly.io as pio
+
 
 
 from sklearn.preprocessing import FunctionTransformer
@@ -373,149 +376,260 @@ def main():
 
 
 
-    comparaison=st.button("Afficher comparaisons")
-    if comparaison:
-        
-        num_cols=data_sample.select_dtypes(exclude="object").columns.tolist()
-        num_cols=[col for col in num_cols if col!="TARGET"]
-        num_cols=[col for col in num_cols if col in dict_main_variables.keys()]
+    # comparaison=st.button("Afficher comparaisons")
+    # if comparaison:
+    #
+    #     num_cols=data_sample.select_dtypes(exclude="object").columns.tolist()
+    #     num_cols=[col for col in num_cols if col!="TARGET"]
+    #     num_cols=[col for col in num_cols if col in dict_main_variables.keys()]
+    #
+    #
+    #
+    #     # cat_cols=data.select_dtypes(include="object").columns.tolist()
+    #     # cat_cols=[col for col in cat_cols if col in dict_main_variables.keys()]
+    #
+    #     n_clients=500
+    #
+    #     preprocessor_fill=preprocessor_f(data_sample)
+    #
+    #
+    #     clients_proches=knn_search(data_client,n=n_clients)
+    #     index=clients_proches.index
+    #
+    #     preprocessor_fill.fit(data_sample,target)
+    #     clients_proches_filled=preprocessor_fill.transform(clients_proches)
+    #
+    #     clients_proches_filled=pd.DataFrame(clients_proches_filled,columns=num_cols+cat_cols)
+    #     clients_proches_filled=clients_proches_filled.set_index(index)
+    #     clients_proches_filled["TARGET"]=target.iloc[index]
+    #     clients_proches_filled = clients_proches_filled[list(dict_main_variables.keys()) + ["TARGET"]]
+    #
+    #
+    #
+    #     st.title(f"Comparaisons avec les {n_clients} clients les plus proches :")
+    #     for cat in cat_cols:
+    #         # Data
+    #         groups = clients_proches_filled[cat].value_counts().index.tolist()
+    #         values_0 = [clients_proches_filled.loc[(clients_proches_filled[cat]==c)&(clients_proches_filled["TARGET"]==0),"TARGET"].count() for c in groups]
+    #         values_1 = [clients_proches_filled.loc[(clients_proches_filled[cat]==c)&(clients_proches_filled["TARGET"]==1),"TARGET"].count() for c in groups]
+    #
+    #         fig, ax = plt.subplots()
+    #
+    #         # Stacked bar chart
+    #         ax.bar(groups, values_0, color="green")
+    #         ax.bar(groups, values_1, bottom=values_0, color="red")
+    #
+    #         st.markdown(f"<h3><b>{cat}</b>, <span style='font-size:24px;'>client actuel :</span></h3>", unsafe_allow_html=True)
+    #         st.markdown(f"<h2><span style='color:blue'>{data_client[cat].values[0]}</span></h2>", unsafe_allow_html=True)
+    #
+    #
+    #
+    #
+    #         ax.legend(["Succès", "Echec"], loc="upper right")
+    #         plt.xticks(rotation=62)
+    #         st.pyplot(fig)
+    #
+    #             # Choisir une palette de couleurs
+    #     palette = sns.color_palette(["green", "red"])
+    #
+    #     # Créer une figure avec des sous-graphiques pour chaque variable numérique
+    #     fig, axes = plt.subplots(nrows=1, ncols=len(num_cols), figsize=(50, 16))
+    #
+    #     # Boucle sur les variables numériques
+    #     for i, num in enumerate(num_cols):
+    #         # Créer le stripplot en utilisant "TARGET" comme hue
+    #         sns.stripplot(x="TARGET", y=num, data=clients_proches_filled, palette=palette, ax=axes[i], size=15)
+    #
+    #         # Ajouter un point bleu pour la valeur 100
+    #         axes[i].scatter(x=0.5, y=data_client[num], s=300, c='blue', marker='o')
+    #
+    #         # Ajouter un titre et des étiquettes d'axe
+    #         axes[i].set_title(f"{num}", fontsize=24, fontweight="bold")
+    #         axes[i].set_xlabel("TARGET", fontsize=20, fontweight="bold")
+    #         axes[i].set_ylabel(num, fontsize=20, fontweight="bold")
+    #         axes[i].set_xticks([0,1])
+    #         axes[i].set_xticklabels(["Succès", "Échec "], fontsize=16)
+    #         axes[i].tick_params(axis='both', which='major', labelsize=16)
+    #         for tick in axes[i].get_xticklabels():
+    #             tick.set_rotation(0)
+    #
+    #     # Ajuster la taille des sous-graphiques et espacer les uns des autres
+    #     fig.tight_layout(pad=3)
+    #
+    #     # Convertir le graphique en une image pour l'afficher dans Streamlit
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close(fig)
+    #     image = buffer.getvalue()
+    #
+    #     # Afficher l'image dans Streamlit
+    #     st.image(image, use_column_width=True)
+    #
+    #     plt.close()
+    #
+    #
+    #
+    #     # Créer une figure avec des sous-graphiques pour chaque variable numérique
+    #     fig, axes = plt.subplots(nrows=1, ncols=len(num_cols), figsize=(50, 16))
+    #
+    #
+    #
+    #     supp_cols=["RATIO_INCOME_CREDIT","RATIO_GOODS_CREDIT"]
+    #
+    #     clients_proches_filled["RATIO_INCOME_CREDIT"]=clients_proches_filled["AMT_INCOME_TOTAL"]/clients_proches_filled["AMT_CREDIT"]
+    #     clients_proches_filled["RATIO_GOODS_CREDIT"]=clients_proches_filled["AMT_GOODS_PRICE"]/clients_proches_filled["AMT_CREDIT"]
+    #
+    #     data_client["RATIO_INCOME_CREDIT"]=data_client["AMT_INCOME_TOTAL"]/data_client["AMT_CREDIT"]
+    #     data_client["RATIO_GOODS_CREDIT"]=data_client["AMT_GOODS_PRICE"]/data_client["AMT_CREDIT"]
+    #
+    #
+    #
+    #     # Boucle sur les variables numériques
+    #     for i, supp in enumerate(supp_cols):
+    #         # Créer le stripplot en utilisant "TARGET" comme hue
+    #         sns.stripplot(x="TARGET", y=supp, data=clients_proches_filled, palette=palette, ax=axes[i], size=15)
+    #
+    #         # Ajouter un point bleu pour la valeur 100
+    #         axes[i].scatter(x=0.5, y=data_client[supp], s=300, c='blue', marker='o')
+    #
+    #         # Ajouter un titre et des étiquettes d'axe
+    #         axes[i].set_title(f"{supp}", fontsize=24, fontweight="bold")
+    #         axes[i].set_xlabel("TARGET", fontsize=20, fontweight="bold")
+    #         axes[i].set_ylabel(num, fontsize=20, fontweight="bold")
+    #         axes[i].set_xticks([0,1])
+    #         axes[i].set_xticklabels(["Succès", "Échec "], fontsize=16)
+    #         axes[i].tick_params(axis='both', which='major', labelsize=16)
+    #         for tick in axes[i].get_xticklabels():
+    #             tick.set_rotation(0)
+    #
+    #     # Ajuster la taille des sous-graphiques et espacer les uns des autres
+    #     fig.tight_layout(pad=3)
+    #
+    #     # Convertir le graphique en une image pour l'afficher dans Streamlit
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close(fig)
+    #     image = buffer.getvalue()
+    #
+    #     # Afficher l'image dans Streamlit
+    #     st.image(image, use_column_width=True)
+    #
+    #     plt.close()
 
-
+    graphiques = st.button("Afficher graphiques")
+    if graphiques :
+        num_cols = data_sample.select_dtypes(exclude="object").columns.tolist()
+        num_cols = [col for col in num_cols if col != "TARGET"]
+        num_cols = [col for col in num_cols if col in dict_main_variables.keys()]
 
         # cat_cols=data.select_dtypes(include="object").columns.tolist()
         # cat_cols=[col for col in cat_cols if col in dict_main_variables.keys()]
 
-        n_clients=500
-        
-        preprocessor_fill=preprocessor_f(data_sample)
-        
-        
-        clients_proches=knn_search(data_client,n=n_clients)
-        index=clients_proches.index
+        n_clients = 500
 
-        preprocessor_fill.fit(data_sample,target)
-        clients_proches_filled=preprocessor_fill.transform(clients_proches)
-   
-        clients_proches_filled=pd.DataFrame(clients_proches_filled,columns=num_cols+cat_cols)
-        clients_proches_filled=clients_proches_filled.set_index(index)
-        clients_proches_filled["TARGET"]=target.iloc[index]
+        preprocessor_fill = preprocessor_f(data_sample)
+
+        clients_proches = knn_search(data_client, n=n_clients)
+        index = clients_proches.index
+
+        preprocessor_fill.fit(data_sample, target)
+        clients_proches_filled = preprocessor_fill.transform(clients_proches)
+
+        clients_proches_filled = pd.DataFrame(clients_proches_filled, columns=num_cols + cat_cols)
+        clients_proches_filled = clients_proches_filled.set_index(index)
+        clients_proches_filled["TARGET"] = target.iloc[index]
         clients_proches_filled = clients_proches_filled[list(dict_main_variables.keys()) + ["TARGET"]]
-        
-        # graph_cat=st.button("Afficher graphiques variables catégorielles")
-        # graph_num=st.button("Afficher graphiques variables numériques")
-        
-        
-        
-        
-        st.title(f"Comparaisons avec les {n_clients} clients les plus proches :")
+
         for cat in cat_cols:
-            # Data
             groups = clients_proches_filled[cat].value_counts().index.tolist()
-            values_0 = [clients_proches_filled.loc[(clients_proches_filled[cat]==c)&(clients_proches_filled["TARGET"]==0),"TARGET"].count() for c in groups]
-            values_1 = [clients_proches_filled.loc[(clients_proches_filled[cat]==c)&(clients_proches_filled["TARGET"]==1),"TARGET"].count() for c in groups]
-    
-            fig, ax = plt.subplots()
-    
+            values_0 = [clients_proches_filled.loc[(clients_proches_filled[cat] == c) & (
+                        clients_proches_filled["TARGET"] == 0), "TARGET"].count() for c in groups]
+            values_1 = [clients_proches_filled.loc[(clients_proches_filled[cat] == c) & (
+                        clients_proches_filled["TARGET"] == 1), "TARGET"].count() for c in groups]
+
+            fig = go.Figure()
+
             # Stacked bar chart
-            ax.bar(groups, values_0, color="green")
-            ax.bar(groups, values_1, bottom=values_0, color="red")
-            
-            st.markdown(f"<h3><b>{cat}</b>, <span style='font-size:24px;'>client actuel :</span></h3>", unsafe_allow_html=True)
-            st.markdown(f"<h2><span style='color:blue'>{data_client[cat].values[0]}</span></h2>", unsafe_allow_html=True)
+            fig.add_trace(go.Bar(x=groups, y=values_0, name='Succès', marker_color='green'))
+            fig.add_trace(go.Bar(x=groups, y=values_1, name='Echec', marker_color='red'))
 
+            fig.update_layout(
+                title=f"{cat}, client actuel: {data_client[cat].values[0]}",
+                xaxis=dict(title=cat),
+                yaxis=dict(title='Nombre de clients'),
+                barmode='stack'
+            )
 
+            # Afficher le graphique interactif
+            st.plotly_chart(fig)
 
+        # Choisir une palette de couleurs
+        palette = ["green", "red"]
 
-            ax.legend(["Succès", "Echec"], loc="upper right")
-            plt.xticks(rotation=62)
-            st.pyplot(fig)
-                            
-                # Choisir une palette de couleurs
-        palette = sns.color_palette(["green", "red"])
-        
-        # Créer une figure avec des sous-graphiques pour chaque variable numérique
-        fig, axes = plt.subplots(nrows=1, ncols=len(num_cols), figsize=(50, 16))
-        
+        # Créer un DataFrame pour les variables numériques
+        num_data = pd.DataFrame(clients_proches_filled[num_cols])
+        num_data["TARGET"] = clients_proches_filled["TARGET"]
+
         # Boucle sur les variables numériques
-        for i, num in enumerate(num_cols):
-            # Créer le stripplot en utilisant "TARGET" comme hue
-            sns.stripplot(x="TARGET", y=num, data=clients_proches_filled, palette=palette, ax=axes[i], size=15)
-        
-            # Ajouter un point bleu pour la valeur 100
-            axes[i].scatter(x=0.5, y=data_client[num], s=300, c='blue', marker='o')
-        
-            # Ajouter un titre et des étiquettes d'axe
-            axes[i].set_title(f"{num}", fontsize=24, fontweight="bold")
-            axes[i].set_xlabel("TARGET", fontsize=20, fontweight="bold")
-            axes[i].set_ylabel(num, fontsize=20, fontweight="bold")
-            axes[i].set_xticks([0,1])
-            axes[i].set_xticklabels(["Succès", "Échec "], fontsize=16)
-            axes[i].tick_params(axis='both', which='major', labelsize=16)
-            for tick in axes[i].get_xticklabels():
-                tick.set_rotation(0)
-        
-        # Ajuster la taille des sous-graphiques et espacer les uns des autres
-        fig.tight_layout(pad=3)
-        
-        # Convertir le graphique en une image pour l'afficher dans Streamlit
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        plt.close(fig)
-        image = buffer.getvalue()
-        
-        # Afficher l'image dans Streamlit
-        st.image(image, use_column_width=True)
-        
-        plt.close()
-        
+        for num in num_cols:
+            # Créer un stripplot interactif avec Plotly
+            fig = go.Figure()
 
-        
-        # Créer une figure avec des sous-graphiques pour chaque variable numérique
-        fig, axes = plt.subplots(nrows=1, ncols=len(num_cols), figsize=(50, 16))
-        
-        
-        
-        supp_cols=["RATIO_INCOME_CREDIT","RATIO_GOODS_CREDIT"]
-        
-        clients_proches_filled["RATIO_INCOME_CREDIT"]=clients_proches_filled["AMT_INCOME_TOTAL"]/clients_proches_filled["AMT_CREDIT"]
-        clients_proches_filled["RATIO_GOODS_CREDIT"]=clients_proches_filled["AMT_GOODS_PRICE"]/clients_proches_filled["AMT_CREDIT"]
-        
-        data_client["RATIO_INCOME_CREDIT"]=data_client["AMT_INCOME_TOTAL"]/data_client["AMT_CREDIT"]
-        data_client["RATIO_GOODS_CREDIT"]=data_client["AMT_GOODS_PRICE"]/data_client["AMT_CREDIT"]
-        
-        
-        
-        # Boucle sur les variables numériques
+            # Ajouter les points pour les valeurs de succès et d'échec
+            fig.add_trace(go.Box(x=num_data[num][num_data["TARGET"] == 0], name="Succès"))
+            fig.add_trace(go.Box(x=num_data[num][num_data["TARGET"] == 1], name="Échec"))
+
+            # Ajouter un point pour la valeur 100
+            fig.add_trace(go.Scatter(x=[0.5], y=[data_client[num]], mode="markers", marker=dict(color="blue"),
+                                     name="Client actuel"))
+
+            # Modifier l'apparence du graphique
+            fig.update_layout(
+                title=f"{num}",
+                xaxis=dict(title="TARGET", ticktext=["Succès", "Échec"]),
+                yaxis=dict(title=num),
+            )
+
+            # Afficher le graphique interactif dans Streamlit
+            st.plotly_chart(fig)
+
+        supp_cols = ["RATIO_INCOME_CREDIT", "RATIO_GOODS_CREDIT"]
+
+        clients_proches_filled["RATIO_INCOME_CREDIT"] = clients_proches_filled["AMT_INCOME_TOTAL"] / \
+                                                        clients_proches_filled["AMT_CREDIT"]
+        clients_proches_filled["RATIO_GOODS_CREDIT"] = clients_proches_filled["AMT_GOODS_PRICE"] / \
+                                                       clients_proches_filled["AMT_CREDIT"]
+
+        data_client["RATIO_INCOME_CREDIT"] = data_client["AMT_INCOME_TOTAL"] / data_client["AMT_CREDIT"]
+        data_client["RATIO_GOODS_CREDIT"] = data_client["AMT_GOODS_PRICE"] / data_client["AMT_CREDIT"]
+
+        # Créer un DataFrame pour les variables supplémentaires
+        supp_data = pd.DataFrame(clients_proches_filled[supp_cols])
+        supp_data["TARGET"] = clients_proches_filled["TARGET"]
+
+        # Boucle sur les variables supplémentaires
         for i, supp in enumerate(supp_cols):
-            # Créer le stripplot en utilisant "TARGET" comme hue
-            sns.stripplot(x="TARGET", y=supp, data=clients_proches_filled, palette=palette, ax=axes[i], size=15)
-        
-            # Ajouter un point bleu pour la valeur 100
-            axes[i].scatter(x=0.5, y=data_client[supp], s=300, c='blue', marker='o')
-        
-            # Ajouter un titre et des étiquettes d'axe
-            axes[i].set_title(f"{supp}", fontsize=24, fontweight="bold")
-            axes[i].set_xlabel("TARGET", fontsize=20, fontweight="bold")
-            axes[i].set_ylabel(num, fontsize=20, fontweight="bold")
-            axes[i].set_xticks([0,1])
-            axes[i].set_xticklabels(["Succès", "Échec "], fontsize=16)
-            axes[i].tick_params(axis='both', which='major', labelsize=16)
-            for tick in axes[i].get_xticklabels():
-                tick.set_rotation(0)
-        
-        # Ajuster la taille des sous-graphiques et espacer les uns des autres
-        fig.tight_layout(pad=3)
-        
-        # Convertir le graphique en une image pour l'afficher dans Streamlit
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        plt.close(fig)
-        image = buffer.getvalue()
-        
-        # Afficher l'image dans Streamlit
-        st.image(image, use_column_width=True)
-        
-        plt.close()
+            # Créer un stripplot interactif avec Plotly
+            fig = go.Figure()
+
+            # Ajouter les points pour les valeurs de succès et d'échec
+            fig.add_trace(go.Box(x=supp_data[supp][supp_data["TARGET"] == 0], name="Succès"))
+            fig.add_trace(go.Box(x=supp_data[supp][supp_data["TARGET"] == 1], name="Échec"))
+
+            # Ajouter un point pour la valeur du client actuel
+            fig.add_trace(go.Scatter(x=[0.5], y=[data_client[supp]], mode="markers", marker=dict(color="blue"), name="Client actuel"))
+
+            # Modifier l'apparence du graphique
+            fig.update_layout(
+                title=f"{supp}",
+                xaxis=dict(title="TARGET", ticktext=["Succès", "Échec"]),
+                yaxis=dict(title=supp),
+            )
+
+            # Afficher le graphique interactif dans Streamlit
+            st.plotly_chart(fig)
+
+
 
     
 if __name__=='__main__':
