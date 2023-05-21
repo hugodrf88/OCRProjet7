@@ -25,10 +25,10 @@ import joblib
 from datetime import date, timedelta
 import seaborn as sns
 
-
-import plotly.express as px
-import plotly.graph_objs as go
-from plotly.subplots import make_subplots
+#
+# import plotly.express as px
+# import plotly.graph_objs as go
+# from plotly.subplots import make_subplots
 
 
 class PredictionVariables(BaseModel):
@@ -122,12 +122,12 @@ def preprocessor_f(df):
     return preprocessor_fi
 
 
-# Chargement de la pipeline à partir du fichier
+# # Chargement de la pipeline à partir du fichier
 preprocessor = joblib.load('./models/preprocessor.joblib')
-#preprocessor_fill=joblib.load('./models/preprocessor_fill.joblib')
-
-model_logreg = joblib.load('./models/best_model.pkl')
-#model_knn=joblib.load("./models/knn_model.joblib")
+# #preprocessor_fill=joblib.load('./models/preprocessor_fill.joblib')
+#
+# model_logreg = joblib.load('./models/best_model.pkl')
+# #model_knn=joblib.load("./models/knn_model.joblib")
 
 # importation du dataset transformé
 # data_transformed=pd.read_csv("./data/data_transformed.csv", encoding='utf-8')
@@ -195,8 +195,8 @@ def main():
     # def update_df(df):
     #     for c in main_variables:
     #         df[c]=c.globals()[c]
-                
-                
+
+
     #data_client,dic=init_df(data_sample)
   
     data_client=pd.read_csv("./data/data_med.csv",index_col=0)
@@ -254,9 +254,9 @@ def main():
 
     prediction_variables=PredictionVariables()
     prediction_variables.update_variables(data_client_dict)
-    st.write(prediction_variables)
+  #  st.write(prediction_variables)
 
-    response = requests.post('http://127.0.0.1:8000/prediction', json=data_client_dict)
+    response = requests.post('http://127.0.0.3:8000/prediction', json=data_client_dict)
 
     # Vérifier si la requête a réussi
     if response.status_code == 200:
@@ -266,7 +266,8 @@ def main():
         # Accéder à la partie spécifique des données souhaitées
         if 'prediction' in df:
             prediction = df['prediction']
-            st.write('La prédiction est :', prediction)
+            st.markdown(f"<h2 style='font-size:36px;'> La prédiction est : {prediction}</h2>", unsafe_allow_html=True)
+
         else:
             st.write('Données de prédiction manquantes dans la réponse.')
     else:
@@ -275,13 +276,15 @@ def main():
     #st.write(prediction)
     #rounded_prediction=str(prediction.round(2))
 
-    st.subheader("Résultat :")
-    #st.write(f"<h1 style='text-align: center; color: grey; font-size: 55px;'>{str(rounded_prediction).strip('[]')}</h1>", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)  # Add line breaks
+    st.markdown("<h2 style='font-size:24px;'>Résultat :</h2>", unsafe_allow_html=True)    #st.write(f"<h1 style='text-align: center; color: grey; font-size: 55px;'>{str(rounded_prediction).strip('[]')}</h1>", unsafe_allow_html=True)
     
     
     seuil=1/4
+    proba=response.json()
+    p=proba["prediction"]
     # Définir une variable conditionnelle
-    condition = response<=seuil
+    condition = p<=seuil
     
     # Afficher un texte en vert si la condition est vraie, sinon en rouge
     if condition:

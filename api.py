@@ -149,11 +149,6 @@ class PredictionResponse(BaseModel):
 
 
 
-@app.get("/")
-def read_root():
-    print("Hello, World!")
-    return {"message": "Hello, World!"}
-
 @app.post('/prediction', response_model=PredictionResponse)
 def prediction(request: PredictionRequest):
     logging.basicConfig(level=logging.DEBUG)
