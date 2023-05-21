@@ -34,27 +34,7 @@ def import_data(pth):
     return df
 
 
-def seuil_na(df,seuil=60):
 
-   """
-   Supprime les colonnes ayant un pourcentage de valeurs manquantes supérieur ou égal à un seuil donné.
-
-   Parameters:
-       df (DataFrame): dataFrame à traiter.
-       seuil (float): le seuil de pourcentage de valeurs manquantes à partir duquel une colonne sera supprimée (60 par défaut).
-
-   Returns:
-       df (DataFrame): le DataFrame modifié, sans les colonnes ayant un pourcentage de valeurs manquantes supérieur ou égal au seuil.
-   """
-   df_tmp=df.copy()
-   # Calculer le pourcentage de valeurs manquantes par colonne
-   tmp_na = df_tmp.isna().sum()
-   tmp_na = tmp_na / df_tmp.shape[0] * 100
-   # Filtrer les colonnes ayant un pourcentage de valeurs manquantes supérieur ou égal au seuil
-   cols_na = tmp_na[tmp_na >= seuil].index
-   # Supprimer les colonnes concernées du DataFrame
-   df_tmp = df_tmp.drop(cols_na, axis=1)
-   return df_tmp
 
 
 def data_splitting(df):
@@ -275,7 +255,7 @@ def train_model(df,X_tr,X_t,y_tr,y_t):
     
     
     # sauvegarde du modèle
-    joblib.dump(model,"./models/logreg_model.pkl")
+    joblib.dump(model,"./models/logreg_model.joblib")
     
     
     
