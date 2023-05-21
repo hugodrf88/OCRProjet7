@@ -576,12 +576,16 @@ def main():
             fig = go.Figure()
 
             # Ajouter les points pour les valeurs de succès et d'échec
-            fig.add_trace(go.Box(x=num_data[num][num_data["TARGET"] == 0], name="Succès"))
-            fig.add_trace(go.Box(x=num_data[num][num_data["TARGET"] == 1], name="Échec"))
+            fig.add_trace(
+                go.Box(x=num_data[num][num_data["TARGET"] == 0], name="Succès", marker=dict(color="green")))
 
-            # Ajouter un point pour la valeur 100
-            fig.add_trace(go.Scatter(x=[0.5], y=[data_client[num]], mode="markers", marker=dict(color="blue"),
-                                     name="Client actuel"))
+            # Ajouter un scatterplot pour la valeur du client actuel
+            fig.add_trace(go.Box(x=data_client[num], name="Client actuel", marker=dict(color="blue")))
+
+            # Ajouter les points pour les valeurs de succès et d'échec
+            fig.add_trace(go.Box(x=num_data[num][num_data["TARGET"] == 1], name="Échec", marker=dict(color="red")))
+
+
 
             # Modifier l'apparence du graphique
             fig.update_layout(
@@ -613,11 +617,15 @@ def main():
             fig = go.Figure()
 
             # Ajouter les points pour les valeurs de succès et d'échec
-            fig.add_trace(go.Box(x=supp_data[supp][supp_data["TARGET"] == 0], name="Succès"))
-            fig.add_trace(go.Box(x=supp_data[supp][supp_data["TARGET"] == 1], name="Échec"))
+            fig.add_trace(go.Box(x=supp_data[supp][supp_data["TARGET"] == 0], name="Succès",marker=dict(color="green")))
 
-            # Ajouter un point pour la valeur du client actuel
-            fig.add_trace(go.Scatter(x=[0.5], y=[data_client[supp]], mode="markers", marker=dict(color="blue"), name="Client actuel"))
+            # Ajouter un scatterplot pour la valeur du client actuel
+            fig.add_trace(go.Box(x=data_client[supp],name="Client actuel",marker=dict(color="blue")))
+
+            # Ajouter les points pour les valeurs de succès et d'échec
+            fig.add_trace(go.Box(x=supp_data[supp][supp_data["TARGET"] == 1], name="Échec",marker=dict(color="red")))
+
+
 
             # Modifier l'apparence du graphique
             fig.update_layout(
