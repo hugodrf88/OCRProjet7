@@ -406,7 +406,7 @@ def main():
     #
     #
     #
-    #     st.title(f"Comparaisons avec les {n_clients} clients les plus proches :")
+    #
     #     for cat in cat_cols:
     #         # Data
     #         groups = clients_proches_filled[cat].value_counts().index.tolist()
@@ -526,7 +526,7 @@ def main():
         # cat_cols=[col for col in cat_cols if col in dict_main_variables.keys()]
 
         n_clients = 500
-
+        st.title(f"Comparaisons avec les {n_clients} clients les plus proches :")
         preprocessor_fill = preprocessor_f(data_sample)
 
         clients_proches = knn_search(data_client, n=n_clients)

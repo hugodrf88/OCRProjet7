@@ -280,8 +280,7 @@ def prediction(request: PredictionRequest):
 
 
     df_values=pd.DataFrame(dict_values,index=[0])
-    logging.debug("Taille du df"+str(df_values.shape[0]))
-    logging.debug("Nombre de variables du df"+str(df_values.shape[1]))
+
 
     prediction_proba=logreg_model.predict_proba(df_values)
     prediction_proba=prediction_proba[0][1]
