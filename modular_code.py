@@ -1,4 +1,6 @@
 import os
+
+import dill
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,6 +8,8 @@ import seaborn as sn
 
 import logging
 import joblib
+import dill as pickle
+from dill import load,dumps
 
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
@@ -174,6 +178,7 @@ def fill_cat(df, most_frequent=False):
 
 
 def fill_num(df, strategy="median"):
+
     """
     Remplit les valeurs manquantes dans les colonnes numériques d'un DataFrame avec une stratégie donnée.
 
@@ -256,6 +261,11 @@ def train_model(df,X_tr,X_t,y_tr,y_t):
     
     # sauvegarde du modèle
     joblib.dump(model,"./models/logreg_model.joblib")
+
+    # with open("./models/logreg_model.joblib", 'wb') as out_strm:
+    #     dill.dump(model, out_strm)
+
+
     
     
     

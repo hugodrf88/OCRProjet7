@@ -547,16 +547,21 @@ def main():
             values_1 = [clients_proches_filled.loc[(clients_proches_filled[cat] == c) & (
                         clients_proches_filled["TARGET"] == 1), "TARGET"].count() for c in groups]
 
+            values_0_pct=[v0/(v0+v1)*100 for v0,v1 in zip(values_0,values_1)]
+            values_1_pct=[v1/(v0+v1)*100 for v0,v1 in zip(values_0,values_1)]
+
             fig = go.Figure()
 
+            groups_n=[g+" (n="+str(v0+v1)+")" for g,v0,v1 in zip(groups,values_0,values_1)]
+
             # Stacked bar chart
-            fig.add_trace(go.Bar(x=groups, y=values_0, name='Succès', marker_color='green'))
-            fig.add_trace(go.Bar(x=groups, y=values_1, name='Echec', marker_color='red'))
+            fig.add_trace(go.Bar(x=groups_n ,y=values_0_pct, name='Succès', marker_color='green'))
+            fig.add_trace(go.Bar(x=groups_n, y=values_1_pct, name='Echec', marker_color='red'))
 
             fig.update_layout(
                 title=f"{cat}, client actuel: {data_client[cat].values[0]}",
                 xaxis=dict(title=cat),
-                yaxis=dict(title='Nombre de clients'),
+                yaxis=dict(title='Pourcentage de clients'),
                 barmode='stack'
             )
 

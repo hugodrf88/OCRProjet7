@@ -1,4 +1,4 @@
-
+import dill
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -7,10 +7,29 @@ import joblib
 import logging
 import dill as pickle
 from functions.functions import fill_cat,fill_num
+from sklearn.impute import SimpleImputer
 
+# class CustomUnpickler(pickle.Unpickler):
+#
+#     def find_class(self, module, name):
+#         if name == 'fill_num':
+#             from functions.functions import fill_num
+#             return fill_num
+#
+#         if name =='fill_cat':
+#             from functions.functions import fill_cat
+#             return fill_cat
+#         return super().find_class(module, name)
+#
+# model = 'logreg_model.joblib'
+#
+# logreg_model = CustomUnpickler(open('./models/' + model, 'rb')).load()
 
 logreg_model = joblib.load('./models/logreg_model.joblib')
 
+#
+# with open("./models/logreg_model.joblib", 'rb') as in_strm:
+#     logreg_model = dill.load(in_strm)
 
 logging.basicConfig(level=logging.DEBUG)
 
