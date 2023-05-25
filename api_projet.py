@@ -113,7 +113,7 @@ def preprocessor_f(df):
 
 
 # Chargement de la pipeline à partir du fichier
-preprocessor = joblib.load('./models/preprocessor.joblib')
+preprocessor = joblib.load('./models/preprocessor2.joblib')
 #preprocessor_fill=joblib.load('./models/preprocessor_fill.joblib')
 
 model_logreg = joblib.load('./models/logreg_model.pkl')
