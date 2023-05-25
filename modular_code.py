@@ -33,13 +33,8 @@ logging.basicConfig(
 def import_data(pth):
     df=pd.read_csv(pth)
     df=df.drop("SK_ID_CURR",axis=1)
-    
-    
+
     return df
-
-
-
-
 
 def data_splitting(df):
     """
@@ -207,15 +202,35 @@ def fill_num(df, strategy="median"):
     return df_tmp.values
 
 
-def build_pipeline(df):
+def build_pipeline(df,X_tr,y_tr):
+    y_tr=y_tr.reset_index(drop=True)
+
     num_cols=df.select_dtypes(exclude=["object"]).columns.tolist()
     num_cols=[col for col in num_cols if col!="TARGET"]
     cat_cols=df.select_dtypes(include=["object"]).columns.tolist()
-    
-    num_transformer=Pipeline(steps=[("num_imputer",FunctionTransformer(func=fill_num)),
-                                ("scaler",StandardScaler())])
-    cat_transformer=Pipeline(steps=[("cat_imputer",FunctionTransformer(func=fill_cat)),
-                                 ("encoder",TargetEncoder())])
+
+    num_imputer=FunctionTransformer(func=fill_num)
+    cat_imputer=FunctionTransformer(func=fill_cat)
+
+    imputer=ColumnTransformer(
+        transformers=[("num",num_imputer,num_cols),
+        ("cat",cat_imputer,cat_cols)]
+    )
+
+    # num_transformer=Pipeline(steps=[("num_imputer",FunctionTransformer(func=fill_num)),
+    #                             ("scaler",StandardScaler())])
+    # cat_transformer=Pipeline(steps=[("cat_imputer",FunctionTransformer(func=fill_cat)),
+    #                              ("encoder",TargetEncoder())])
+
+    X_tr_filled = imputer.fit_transform(X_tr)
+    X_tr_filled = pd.DataFrame(X_tr_filled, columns=num_cols + cat_cols)
+
+    num_transformer = Pipeline(steps=[
+        # ("num_imputer",FunctionTransformer(func=fill_num)),
+        ("scaler", StandardScaler())])
+    cat_transformer = Pipeline(steps=[
+        # ("cat_imputer",FunctionTransformer(func=fill_cat)),
+        ("encoder", TargetEncoder())])
 
     preprocessor=ColumnTransformer(
     transformers=[
@@ -233,31 +248,34 @@ def build_pipeline(df):
                                  C=170.06590074301735,
                                  max_iter=2000,
                                  penalty="l2"))])
-    
+
+    pipeline_model.fit(X_tr_filled,y_tr)
+
+
     return pipeline_model
 
 def train_model(df,X_tr,X_t,y_tr,y_t):
     
     # entraînement du modèle
-    model=build_pipeline(df)
-    model.fit(X_tr,y_tr)
+    model=build_pipeline(df,X_tr,y_tr)
+    # model.fit(X_tr,y_tr)
     
-    # prédictions
-    y_train_pred=model.predict(X_tr)
-    y_test_pred=model.predict(X_t)
-    
-    # ROC curves image
-    lrc_plot=RocCurveDisplay.from_estimator(model,X_t,y_t)
-    plt.savefig("images/results/roc_curve.jpg")
-    plt.close()
-    
-    # classification reports images
-    classification_report_image(
-        y_tr,
-        y_train_pred,
-        y_t,
-        y_test_pred)
-    
+    # # prédictions
+    # y_train_pred=model.predict(X_tr)
+    # y_test_pred=model.predict(X_t)
+    #
+    # # ROC curves image
+    # lrc_plot=RocCurveDisplay.from_estimator(model,X_t,y_t)
+    # plt.savefig("images/results/roc_curve.jpg")
+    # plt.close()
+    #
+    # # classification reports images
+    # classification_report_image(
+    #     y_tr,
+    #     y_train_pred,
+    #     y_t,
+    #     y_test_pred)
+    #
     
     # sauvegarde du modèle
     joblib.dump(model,"./models/logreg_model.joblib")
@@ -282,9 +300,9 @@ def main():
     train_data,Xtrain,Xtest,ytrain,ytest=data_splitting(raw_data)
     logging.info("Division des données avec succès...")
     
-    logging.info("Analyse exploratoire des données")
-    perform_eda(raw_data)
-    logging.info("Analyse exploratoire des données avec succès")
+    # logging.info("Analyse exploratoire des données")
+    # perform_eda(raw_data)
+    # logging.info("Analyse exploratoire des données avec succès")
     
     logging.info("Formation du modèle")
     train_model(train_data,Xtrain,Xtest,ytrain,ytest)
