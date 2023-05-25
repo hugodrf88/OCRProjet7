@@ -357,8 +357,9 @@ def main():
 
     def knn_search(client,n=100):
         knn=KNeighborsClassifier(n_neighbors=n)
+
         data_trans=preprocessor.fit_transform(data_sample,target)
-        knn.fit(data_trans,target)
+        knn.fit(data_trans,np.ravel(target))
         
         client_transformed=preprocessor.transform(client)
         distances, indices = knn.kneighbors(client_transformed, n_neighbors=n)
@@ -640,7 +641,6 @@ def main():
     
 if __name__=='__main__':
     main()
-    
-    
 
-            
+
+

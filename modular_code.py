@@ -276,8 +276,7 @@ def train_model(df,X_tr,X_t,y_tr,y_t):
     # sauvegarde du modèle
     joblib.dump(model,"./models/logreg_model.joblib")
 
-    # with open("./models/logreg_model.joblib", 'wb') as out_strm:
-    #     dill.dump(model, out_strm)
+
 
 
     

@@ -12,3 +12,4 @@ scikit_learn==1.0.2
 seaborn==0.12.2
 streamlit==1.22.0
 uvicorn==0.22.0
+dill==0.3.4
