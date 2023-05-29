@@ -294,6 +294,8 @@ def main():
     logging.info("Division des données...")
     train_data,Xtrain,Xtest,ytrain,ytest=data_splitting(raw_data)
     logging.info("Division des données avec succès...")
+
+
     
     # logging.info("Analyse exploratoire des données")
     # perform_eda(raw_data)
@@ -302,7 +304,11 @@ def main():
     logging.info("Formation du modèle")
     train_model(train_data,Xtrain,Xtest,ytrain,ytest)
     logging.info("Formation du modèle avec succès")
-    
+
+    logging.info("Performance du modèle sur les données test...")
+    perf_model()
+    logging.info("Performance affichée avec succès...")
+
     
 if __name__=="__main__":
     print("Exécution en cours")
