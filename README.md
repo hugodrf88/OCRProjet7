@@ -11,8 +11,11 @@ Ce fichier contient le code de l'API développée avec FastAPI. Il utilise un mo
 ### dashboard_local.py
 Ce fichier est similaire à dashboard.py, à la différence qu'il n'interagit pas avec une API. Toute la logique de prédiction est incluse dans le fichier. L'application Streamlit correspondante est disponible à [cette adresse](https://hugodrf88-ocrprojet7-dashboard-local-ojtzf5.streamlit.app)
 
-### data_drift.ipynb
-Ce notebook contient une analyse de dérive de données entre les données de référence "application_train.csv" et les données de production "application_test.csv". Il permet également d'évaluer l'efficacité du modèle en l'absence de la variable cible "TARGET".
+### data_drift.ipynb  
+Ce notebook a été utilisé pour effectuer une analyse de dérive des données entre les données de référence "application_train.csv" et les données de production "application_test.csv" à l'aide de la bibliothèque Evidently. 
+
+### data_drift.html  
+Ce fichier est le résultat graphique de l'analyse de dérive des données effectuée dans data_drift.ipynb.
 
 ### projet7.ipynb
 Ce notebook contient l'ensemble du travail réalisé sur la base de données principale "application_train.csv". Il comprend l'analyse exploratoire des données, l'exploration des corrélations, la recherche d'un modèle de classification binaire adapté, ainsi que l'optimisation des hyperparamètres.
