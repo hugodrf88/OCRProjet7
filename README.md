@@ -3,10 +3,10 @@
 Le projet consiste à développer un modèle de scoring pour prédire la probabilité de faillite d'un client et à construire un dashboard interactif pour les chargés de relation client. L'objectif est de fournir une explication transparente des décisions d'octroi de crédit et de permettre aux clients d'accéder à leurs informations personnelles.
 ## Fichiers
 ### dashboard.py
-Ce fichier contient le code pour le tableau de bord interactif développé avec Streamlit. Il récupère les données clients à partir du tableau de bord et les transmet à api.py pour effectuer des prédictions. Il inclut également des graphiques pour la visualisation des données.
+Ce fichier contient le code pour le tableau de bord interactif développé avec Streamlit. Il récupère les données clients à partir du tableau de bord et les transmet à l'API pour effectuer des prédictions. Il inclut également des graphiques pour la visualisation des données. Le lien vers le dashboard est disponible [ici](https://ocr-db-pret.herokuapp.com).
 
 ### api.py
-Ce fichier contient le code de l'API développée avec FastAPI. Il utilise un modèle de régression logistique pour réaliser des prédictions à partir des données reçues. Les fichiers api.py et dashboard.py ont été déployés sur Heroku pour permettre les prédictions dans le cloud. Le lien vers l'application en ligne est disponible [ici](https://ocr-db-pret.herokuapp.com).
+Ce fichier contient le code de l'API développée avec FastAPI. Il utilise un modèle de régression logistique pour réaliser des prédictions à partir des données reçues. Les fichiers api.py et dashboard.py ont été déployés sur Heroku pour permettre les prédictions dans le cloud. Le lien vers l'API est disponible [ici](https://ocr-api-pret.herokuapp.com).
 
 ### dashboard_local.py
 Ce fichier est similaire à dashboard.py, à la différence qu'il n'interagit pas avec une API. Toute la logique de prédiction est incluse dans le fichier. L'application Streamlit correspondante est disponible à [cette adresse](https://hugodrf88-ocrprojet7-dashboard-local-ojtzf5.streamlit.app)
