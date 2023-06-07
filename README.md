@@ -27,7 +27,7 @@ Ce script reprend le code précédent, mais sous forme d'un script Python indép
 Ce fichier contient des tests unitaires réalisés sur api.py à l'aide de pytest.
 
 ### ml_flow.ipynb
-Notebook contenant ce qui a été fait pour faire différents tests MLflow.
+Notebook contenant différents tests MLflow.
 
 ### Procfile
 Ce fichier est nécessaire pour le déploiement du projet sur Heroku.
