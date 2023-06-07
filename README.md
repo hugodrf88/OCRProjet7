@@ -37,7 +37,7 @@ Ce fichier répertorie les packages nécessaires pour exécuter le projet.
 Ce dossier contient les bases de données utiles pour le projet. Certaines d'entre elles sont des échantillons des bases de données d'origine en raison des limitations de taille de fichier sur GitHub.
 
 ### functions
-Ce dossier contient les fonctions créées spécifiquement pour ce projet, telles que fill_num et fill_cat, ainsi que des métriques personnalisées spécifiques à notre domaine d'application.
+Ce dossier contient les fonctions créées spécifiquement pour ce projet, telles que fill_num et fill_cat, ainsi que des métriques personnalisées spécifiques à l'un des objectifs du projet.
 
 ### images
 Ce dossier contient les graphiques générés lors de l'analyse exploratoire des données à partir du script modular_code.py.
