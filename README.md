@@ -26,11 +26,17 @@ Ce script reprend le code précédent, mais sous forme d'un script Python indép
 ### test_api.py 
 Ce fichier contient des tests unitaires réalisés sur api.py à l'aide de pytest.
 
+### ml_flow.ipynb
+Notebook contenant ce qui a été fait pour faire différents tests MLflow.
+
 ### Procfile
 Ce fichier est nécessaire pour le déploiement du projet sur Heroku.
 
 ### requirements.txt
 Ce fichier répertorie les packages nécessaires pour exécuter le projet.
+
+### tst_model.py
+Ce fichier contient la valeur médiane des variables du dataframe "application_train . A été utilisé pour tester l'API.
 
 ## Dossiers
 ### data
